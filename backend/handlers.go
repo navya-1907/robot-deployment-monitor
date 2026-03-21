@@ -18,18 +18,26 @@ var robotLogs []RobotData
 
 func robotHandler(w http.ResponseWriter, r *http.Request) {
 
-	var data RobotData
+	enableCors(&w)
 
+	var data RobotData
 	json.NewDecoder(r.Body).Decode(&data)
 
 	robotLogs = append(robotLogs, data)
 
 	checkAlerts(data)
-
 	saveLogs()
 }
 
 func logsHandler(w http.ResponseWriter, r *http.Request) {
 
+	enableCors(&w)
+
+	w.Header().Set("Content-Type", "application/json")
+
 	json.NewEncoder(w).Encode(robotLogs)
+}
+
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 }
